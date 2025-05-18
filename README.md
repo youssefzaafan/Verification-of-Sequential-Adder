@@ -76,7 +76,7 @@ Coverage is sampled during the `write()` function, and a summary is printed in t
 
 ## ▶️ How to Run
 
-[EDA Playground linl](https://edaplayground.com/x/T5Kc) 
+[EDA Playground link](https://edaplayground.com/x/T5Kc) 
 
 ## 📊 Expected Output
 
