@@ -31,11 +31,22 @@ This project demonstrates a full **Universal Verification Methodology (UVM)** te
 Functional coverage is tracked using a covergroup defined inside a `uvm_subscriber`. It monitors inputs `a` and `b`:
 
 ```systemverilog
-covergroup cg;
-  cov1: coverpoint tr.a { bins a_vals[] = {[0:15]}; }
-  cov2: coverpoint tr.b { bins b_vals[] = {[0:15]}; }
-  ab_cross: cross cov1, cov2;
-endgroup
+covergroup cg @(tr);
+
+    cov_a: coverpoint tr.a {
+      bins low     = {[0:3]};
+      bins mid     = {[4:11]};
+      bins high    = {[12:15]};
+    }
+
+    cov_b: coverpoint tr.b {
+      bins low     = {[0:3]};
+      bins mid     = {[4:11]};
+      bins high    = {[12:15]};
+    }
+
+    ab_cross: cross cov_a, cov_b;  
+  endgroup
 ```
 
 Coverage is sampled during the `write()` function, and a summary is printed in the `report_phase()`.
@@ -58,37 +69,44 @@ Coverage is sampled during the `write()` function, and a summary is printed in t
 
 - **Language**: SystemVerilog
 - **Methodology**: UVM (Universal Verification Methodology)
-- **Simulator**: Synopsys VCS 2023
+- **Simulator**: Adlec Riviera Pro 2023.04
 - **Target Design**: RTL 4-bit adder with clocked output
 
 ---
 
 ## ▶️ How to Run
 
-1. **Compile the code:**
-   ```bash
-   vcs -full64 -sverilog +acc +vpi +vcs+lic+wait \
-       +incdir+. *.sv -l comp.log
-   ```
-
-2. **Run the simulation:**
-   ```bash
-   ./simv -l sim.log
-   ```
-
-3. **Generate coverage report (optional):**
-   ```bash
-   urg -dir simv.vdb -full64 -format both
-   ```
-
----
+[EDA Playground linl](https://edaplayground.com/x/T5Kc) 
 
 ## 📊 Expected Output
 
 - UVM reports showing:
-  - Transaction values
-  - Comparison results from scoreboard
-  - Final coverage summary from subscriber
+  
+```systemverilog
+# KERNEL: UVM_INFO /home/runner/driver.sv(46) @ 825: uvm_test_top.env.ag.drv [DRV] Trigger DUT a: 11 ,b :  7
+# KERNEL: UVM_INFO /home/runner/monitor.sv(35) @ 845: uvm_test_top.env.ag.mon [MON] Data send to Scoreboard a : 11 , b : 7 and y : 18
+# KERNEL: UVM_INFO /home/runner/scoreboard.sv(27) @ 845: uvm_test_top.env.scb [SCO] Data rcvd from Monitor a: 11 , b : 7 and y : 18
+# KERNEL: UVM_INFO /home/runner/scoreboard.sv(30) @ 845: uvm_test_top.env.scb [SCO] Transaction is correct
+# KERNEL: ----------------------------------------------------------------
+# KERNEL: UVM_INFO /home/build/vlib1/vlib/uvm-1.2/src/base/uvm_objection.svh(1271) @ 845: reporter [TEST_DONE] 'run' phase is ready to proceed to the 'extract' phase
+# KERNEL: UVM_INFO /home/runner/subscriber.sv(52) @ 845: uvm_test_top.env.sub [subscriber] Functional Coverage is 100.000000
+# KERNEL: UVM_INFO /home/build/vlib1/vlib/uvm-1.2/src/base/uvm_report_server.svh(869) @ 845: reporter [UVM/REPORT/SERVER] 
+# KERNEL: --- UVM Report Summary ---
+# KERNEL: 
+# KERNEL: ** Report counts by severity
+# KERNEL: UVM_INFO :  165
+# KERNEL: UVM_WARNING :    0
+# KERNEL: UVM_ERROR :    0
+# KERNEL: UVM_FATAL :    0
+# KERNEL: ** Report counts by id
+# KERNEL: [DRV]    41
+# KERNEL: [MON]    40
+# KERNEL: [RNTST]     1
+# KERNEL: [SCO]    80
+# KERNEL: [TEST_DONE]     1
+# KERNEL: [UVM/RELNOTES]     1
+# KERNEL: [subscriber]     1
+```
 
 ---
 
@@ -98,8 +116,3 @@ Coverage is sampled during the `write()` function, and a summary is printed in t
 📧 Email: youssefzafan@gmail.com  
 🔗 LinkedIn: [linkedin.com/in/youssef-zaafan-211482169](https://www.linkedin.com/in/youssef-zaafan-211482169)
 
----
-
-## 🙋‍♂️ Contributions
-
-Issues, forks, and pull requests are welcome. Help expand and refine this UVM project!
